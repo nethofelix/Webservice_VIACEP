@@ -28,13 +28,19 @@ implementation
 
 function TRetorno.Consultar(ACEP:string): Boolean;
 var
-  lRetorno  : String;
+  lRetorno : String;
+  lErro    : string;
+  I        : Integer;
 begin
   lRetorno  := TFPHTTPClient.SimpleGet('http://viacep.com.br/ws/'+ACep+'/json/');
   vParse    := TJSONParser.Create(lRetorno);
   ObjetoCep := (vParse.Parse as TJSONObject);
-
-
+  lErro     := ObjetoCep.AsJSON;
+  I         := Pos('erro',lErro);
+  if(I <> 0)then
+   Result := False
+   else
+   begin
    FRetornoCEP             := TLogradouro.Create;
    FRetornoCEP.Cep         := ObjetoCep.Elements['cep'].AsString;
    FRetornoCEP.Bairro      := ObjetoCep.Elements['bairro'].AsString;
@@ -46,6 +52,7 @@ begin
    FRetornoCEP.Uf          := ObjetoCep.Elements['uf'].AsString;
    FRetornoCEP.Unidade     := ObjetoCep.Elements['unidade'].AsString;
    Result                  := True;
+   end;
 
 end;
 destructor TRetorno.Destroy;

@@ -49,12 +49,24 @@ var
 begin
   lCep := TRetorno.Create;
   try
-   lCep.Consultar(mskCEP.Text);
+  if( lCep.Consultar(mskCEP.Text)) then
+   begin
    edtCidade.Text     := lCEP.Retorno.Localidade;
    edtLogradouro.Text := lCEP.Retorno.Logradouro;
    edtBairro.Text     := lCEP.Retorno.Bairro;
    edtUf.Text         := lCEP.Retorno.Uf;
    edtIbge.Text       := lCEP.Retorno.Ibge;
+   end
+   else
+   begin
+   ShowMessage('Erro ao Localizar CEP');
+   edtLogradouro.Clear;
+   edtbairro.Clear;
+   edtcidade.Clear;
+   edtIBGE.Clear;
+   edtUf.Clear;
+   mskCEP.SetFocus;
+   end;
   finally
    FreeAndNil(lCep);
   end;
